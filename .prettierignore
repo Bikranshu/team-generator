@@ -1,0 +1,6 @@
+**/*.md
+**/*.svg
+package.json
+logs
+public
+k8s

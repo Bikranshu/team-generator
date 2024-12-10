@@ -1,0 +1,613 @@
+openapi: 3.0.1
+info:
+    version: 1.0.0
+    title: 'Team Generator'
+    description: 'Team Generator'
+    contact:
+        name: 'Team Generator Pvt. ltd.'
+        email: test@gmail.com
+        url: 'https://teamgenerator.global'
+security:
+    -
+        ApiKeyAuth: []
+servers:
+    -
+        url: 'http://localhost:3000/v1'
+        description: 'Local Server'
+    -
+        url: 'http://127.0.0.1:3000/v1'
+        description: 'Local Server'
+tags:
+    -
+        name: players
+        description: 'Player Operations'
+    -
+        name: teams
+        description: 'Team Operations'
+    -
+        name: events
+        description: 'Event Operations'
+components:
+    schemas:
+        errorSchema:
+            type: object
+            properties:
+                notFoundError:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            example: 'Not Found.'
+                        code:
+                            type: string
+                            example: '404'
+                internalServerError:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            example: 'Internal Server Error'
+                        code:
+                            type: string
+                            example: '500'
+                forbiddenError:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            example: Forbidden
+                        code:
+                            type: string
+                            example: '403'
+                methodNotAllowedError:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            example: 'Method Not Allowed'
+                        code:
+                            type: string
+                            example: '405'
+                unAuthorizedError:
+                    type: object
+                    properties:
+                        message:
+                            type: string
+                            example: Unauthorized
+                        code:
+                            type: string
+                            example: '401'
+        playerSchema:
+            type: object
+            properties:
+                player:
+                    type: object
+                    properties:
+                        id:
+                            type: number
+                            description: 'Unique Identifier'
+                            example: 1
+                        name:
+                            type: string
+                            description: Name
+                            example: 'Krishna Timilsina'
+                        skill:
+                            type: string
+                            description: Skill
+                            example: '4'
+                playerPayload:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: number
+                                description: 'Unique Identifier'
+                                example: 1
+                                required: false
+                            name:
+                                type: string
+                                description: Name
+                                example: 'Krishna Timilsina'
+                            skill:
+                                type: string
+                                description: Skill
+                                example: '4'
+                searchDetailPayload:
+                    type: object
+                    properties:
+                        id:
+                            type: number
+                            description: 'Record Id'
+                            example: 1
+        teamSchema:
+            type: object
+            properties:
+                team:
+                    type: object
+                    properties:
+                        id:
+                            type: number
+                            description: 'Unique Identifier'
+                            example: 1
+                        title:
+                            type: string
+                            description: Title
+                            example: 'Yellow Team'
+                teamPayload:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: number
+                                description: 'Unique Identifier'
+                                example: 1
+                                required: false
+                            title:
+                                type: string
+                                description: Title
+                                example: Team1
+                teamDetailPayload:
+                    type: object
+                    properties:
+                        id:
+                            type: number
+                            description: 'Record Id'
+                            example: 1
+                        title:
+                            type: string
+                            description: Title
+                            example: 'Green Team'
+        eventSchema:
+            type: object
+            properties:
+                event:
+                    type: object
+                    properties:
+                        eventId:
+                            type: number
+                            description: 'Unique identifier'
+                            example: 1
+                        eventTitle:
+                            type: string
+                            description: Title
+                            example: 'Friday Futsal'
+                        publicLink:
+                            type: string
+                            description: 'Public Link'
+                            example: 'http://localhost:3000/5e32b467-d1e9-4a57-a799-ffc547c2725d'
+                        players:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    id: {type: number, description: 'Unique Identifier', example: 1}
+                                    name: {type: string, description: Name, example: Krishna}
+                                    skill: {type: number, description: Skill, example: 1}
+                        teams:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    id: {type: number, description: 'Unique Identifier', example: 1}
+                                    title: {type: string, description: Title, example: 'Team 1'}
+                eventPayload:
+                    type: object
+                    properties:
+                        title:
+                            type: string
+                            description: Title
+                            example: 'Friday Fustal'
+                eventDetailPayload:
+                    type: object
+                    properties:
+                        eventId:
+                            type: string
+                            description: 'Unique Identifier'
+                            example: '1'
+                        eventTitle:
+                            type: string
+                            description: Title
+                            example: 'Friday Futsal'
+                        publicLink:
+                            type: string
+                            description: 'Public Link'
+                            example: 'http://localhost:3000/5e32b467-d1e9-4a57-a799-ffc547c2725d'
+                        teams:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    name: {type: string, description: Title, example: 'Team 1'}
+                                    players: {type: array, items: {type: object, properties: {serial: {type: string, description: 'Serial Number', example: 1}, name: {type: string, description: Name, example: Krishna}, skill: {type: string, description: Skill, example: '1'}}}}
+    securitySchemes:
+        ApiKeyAuth:
+            type: apiKey
+            in: header
+            name: Authorization
+            description: "For accessing the API a valid JWT token must be passed in all the queries in the 'Authorization' header.\n\nA valid JWT token is generated by the API and returned as answer of a call to the route '/auths/login' giving a valid email & password. \n\n\nThe following syntax must be used in the 'Authorization' header:\n\nBearer xxxxxx.yyyyyyy.zzzzzz"
+paths:
+    /players:
+        post:
+            tags:
+                - players
+            summary: 'Create a new player and update old data'
+            description: 'Create a new player and update old data'
+            operationId: storePlayer
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/playerSchema/properties/playerPayload'
+            responses:
+                '201':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success: {type: boolean, example: 'true'}
+                                    data: {$ref: '#/components/schemas/playerSchema/properties/player'}
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/unAuthorizedError'
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/notFoundError'
+    /players/search:
+        get:
+            tags:
+                - players
+            summary: 'List all player data'
+            description: 'List all player data'
+            operationId: findAllPlayer
+            responses:
+                '201':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success: {type: boolean, example: 'true'}
+                                    data: {type: object, properties: {data: {type: array, items: {type: object, $ref: '#/components/schemas/playerSchema/properties/player'}}}}
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/unAuthorizedError'
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/notFoundError'
+    '/players/{id}':
+        get:
+            tags:
+                - players
+            summary: 'Find the player data by ID'
+            description: 'Find the player data by ID'
+            operationId: findPlayerById
+            parameters:
+                -
+                    name: id
+                    in: path
+                    description: 'id of player data that needs to be fetched'
+                    required: true
+                    type: string
+                    example: '1'
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success: {type: boolean, example: 'true'}
+                                    data: {type: array, items: {type: object, $ref: '#/components/schemas/playerSchema/properties/player'}}
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/unAuthorizedError'
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/notFoundError'
+        delete:
+            tags:
+                - players
+            summary: 'Update an existing player by ID'
+            description: 'Update an existing player by ID'
+            operationId: destoryPlayerById
+            parameters:
+                -
+                    name: id
+                    in: path
+                    description: 'id of player'
+                    required: true
+                    type: string
+                    example: '1'
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success: {type: boolean, example: 'true'}
+                                    data: {$ref: '#/components/schemas/teamSchema/properties/teamDetailPayload'}
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/unAuthorizedError'
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/notFoundError'
+    /teams:
+        post:
+            tags:
+                - teams
+            summary: 'Create a new team'
+            description: 'Create a new team'
+            operationId: storeTeam
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/teamSchema/properties/teamPayload'
+            responses:
+                '201':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success: {type: boolean, example: 'true'}
+                                    data: {type: array, items: {$ref: '#/components/schemas/teamSchema/properties/team'}}
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/unAuthorizedError'
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/notFoundError'
+    /teams/search:
+        get:
+            tags:
+                - teams
+            summary: 'List all team data'
+            description: 'List all team data'
+            operationId: findAllTeam
+            responses:
+                '201':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success: {type: boolean, example: 'true'}
+                                    data: {type: object, properties: {data: {type: array, items: {type: object, $ref: '#/components/schemas/teamSchema/properties/team'}}}}
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/unAuthorizedError'
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/notFoundError'
+    '/teams/{id}':
+        get:
+            tags:
+                - teams
+            summary: 'Find the team data by ID'
+            description: 'Find the team data by ID'
+            operationId: findTeamById
+            parameters:
+                -
+                    name: id
+                    in: path
+                    description: 'id of team that needs to be fetched'
+                    required: true
+                    type: string
+                    example: '1'
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success: {type: boolean, example: 'true'}
+                                    data: {$ref: '#/components/schemas/teamSchema/properties/teamDetailPayload'}
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/unAuthorizedError'
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/notFoundError'
+        delete:
+            tags:
+                - teams
+            summary: 'Update an existing team by ID'
+            description: 'Update an existing team by ID'
+            operationId: destoryTeamById
+            parameters:
+                -
+                    name: id
+                    in: path
+                    description: 'id of team'
+                    required: true
+                    type: string
+                    example: '1'
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success: {type: boolean, example: 'true'}
+                                    data: {$ref: '#/components/schemas/teamSchema/properties/teamDetailPayload'}
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/unAuthorizedError'
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/notFoundError'
+    /events:
+        post:
+            tags:
+                - events
+            summary: 'Create a new events with team members'
+            description: 'Create a new events with team members'
+            operationId: storeEvent
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/eventSchema/properties/eventPayload'
+            responses:
+                '201':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success: {type: boolean, example: 'true'}
+                                    data: {$ref: '#/components/schemas/eventSchema/properties/event'}
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/unAuthorizedError'
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/notFoundError'
+    '/events/{id}':
+        get:
+            tags:
+                - events
+            summary: 'Find the event data by ID'
+            description: 'Find the event data by ID'
+            operationId: findEventById
+            parameters:
+                -
+                    name: id
+                    in: path
+                    description: 'id of event that needs to be fetched'
+                    required: true
+                    type: string
+                    example: '1'
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success: {type: boolean, example: 'true'}
+                                    data: {$ref: '#/components/schemas/eventSchema/properties/eventDetailPayload'}
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/unAuthorizedError'
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/notFoundError'
+    '/events/detail/{public_link}':
+        get:
+            tags:
+                - events
+            summary: 'Find the event data by uuid'
+            description: 'Find the event data by uuid'
+            operationId: findEventByUuid
+            parameters:
+                -
+                    name: public_link
+                    in: path
+                    description: 'public link of event that needs to be fetched'
+                    required: true
+                    type: string
+                    example: 'http://localhost:3000/ce8ff0f5-bdf3-469c-919f-5fa3adc4ec83'
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success: {type: boolean, example: 'true'}
+                                    data: {$ref: '#/components/schemas/eventSchema/properties/eventDetailPayload'}
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/unAuthorizedError'
+                '404':
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/errorSchema/properties/notFoundError'

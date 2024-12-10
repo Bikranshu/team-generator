@@ -1,0 +1,52 @@
+doctype html
+html(lang="en")
+  head
+    link(rel='stylesheet', href='/style.css')
+    style(type='text/css').
+      .root {
+            background-color: ghostwhite;
+            margin: 0;
+            padding: 8px;
+      }
+      .container {
+            margin: 8px auto;
+            max-width: 640px;
+      }
+      .message-container {
+            padding: 32px;
+            color: black ;
+            background-color: white;
+      }
+      .gap16 {
+            height: 16px;
+      }
+      .gap8 {
+            height: 8px;
+      }
+      p {
+        color: black;
+        margin-bottom: 6px;
+        margin-top: 6px;
+      }
+  body
+    .root
+      .container
+        .message-container
+          img(src='https://reactnative.dev/img/header_logo.svg' height='60px')
+          p= `Hi ${info.name}`
+          p
+            |Your user account has been approved. Please click on the link
+            a(href=`${info.url}`)  here
+            | to direct to the login page.
+          .gap8
+          p
+            |Your credential is
+          p= `UserId : ${info.email}`
+          p= `Password: ${info.password}`
+          .gap8
+          p
+            | Note: Kindly disregard this email if you have already been verified.
+          .gap16
+          p Regards
+          p Global IME
+

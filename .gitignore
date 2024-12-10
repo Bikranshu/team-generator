@@ -1,0 +1,13 @@
+/.idea
+/node_modules
+.env
+/logs
+/dist
+
+# Tests
+coverage
+.nyc_output
+
+npm-debug.log
+test.json
+test.sql

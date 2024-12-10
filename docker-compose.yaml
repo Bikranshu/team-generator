@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  backend:
+    container_name: api-manager
+    build:
+      context: ./
+    # command: npm run start:dev
+    # volumes:
+    #   - ./src:/src
+    #   - ./package.json:/package.json
+    #   - ./public:/public
+    ports:
+      - '3000:3000'
+    environment:
+      HOST: ${HOST:-127.0.0.1}
+      NODE_ENV: ${NODE_ENV:-development}
+      LOG_DIR: ${LOG_DIR}
+      LOG_LEVEL: ${LOG_LEVEL}
+      JWT_KEY: ${JWT_KEY}
+      DB_CLIENT_API: ${DB_CLIENT_API:-mssql}
+      DB_HOST_API: ${DB_HOST_API}
+      DB_USER_NAME_API: ${DB_USER_NAME_API}
+      DB_PASSWORD_API: ${DB_PASSWORD_API}
+      DB_NAME_API: ${DB_NAME_API}
+      DB_PORT_API: ${DB_PORT_API}
+
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      EMAIL_SECURE: ${EMAIL_SECURE}
+
+      OBJECT_STORAGE_HOST: ${OBJECT_STORAGE_HOST}
+      OBJECT_STORAGE_USER_NAME: ${OBJECT_STORAGE_USER_NAME}
+      OBJECT_STORAGE_PASSWORD: ${OBJECT_STORAGE_PASSWORD}
+      OBJECT_STORAGE_BUCKET_NAME: ${OBJECT_STORAGE_BUCKET_NAME}
